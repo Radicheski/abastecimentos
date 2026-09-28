@@ -126,6 +126,29 @@ function RegisterForm({
   const [total, setTotal] = React.useState(
     register ? String(register.total) : ""
   )
+  const [latitude, setLatitude] = React.useState(
+    register ? String(register.coordinates.latitude) : ""
+  )
+  const [longitude, setLongitude] = React.useState(
+    register ? String(register.coordinates.longitude) : ""
+  )
+
+  React.useEffect(() => {
+    if (register || !("geolocation" in navigator)) return
+    let cancelled = false
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        if (cancelled) return
+        setLatitude((current) => current || coords.latitude.toFixed(6))
+        setLongitude((current) => current || coords.longitude.toFixed(6))
+      },
+      () => {},
+      { enableHighAccuracy: true, timeout: 10_000, maximumAge: 60_000 }
+    )
+    return () => {
+      cancelled = true
+    }
+  }, [register])
 
   function updateTotal(quantity: string, price: string) {
     if (quantity && price) {
@@ -147,8 +170,8 @@ function RegisterForm({
       total: Number(total),
       fullTank: form.get("fullTank") === "on",
       coordinates: {
-        latitude: Number(form.get("latitude")),
-        longitude: Number(form.get("longitude")),
+        latitude: Number(latitude),
+        longitude: Number(longitude),
       },
     })
   }
@@ -283,7 +306,8 @@ function RegisterForm({
                   step="any"
                   min="-90"
                   max="90"
-                  defaultValue={register?.coordinates.latitude}
+                  value={latitude}
+                  onChange={(e) => setLatitude(e.target.value)}
                 />
               </Field>
               <Field>
@@ -296,7 +320,8 @@ function RegisterForm({
                   step="any"
                   min="-180"
                   max="180"
-                  defaultValue={register?.coordinates.longitude}
+                  value={longitude}
+                  onChange={(e) => setLongitude(e.target.value)}
                 />
               </Field>
             </div>
