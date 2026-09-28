@@ -6,6 +6,7 @@ import { VitePWA } from "vite-plugin-pwa"
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: process.env.BASE_PATH ?? "/",
   plugins: [
     react(),
     tailwindcss(),
@@ -19,7 +20,6 @@ export default defineConfig({
         short_name: "Abastecimentos",
         description: "Registro de abastecimentos de veículos",
         lang: "pt-BR",
-        start_url: "/",
         display: "standalone",
         orientation: "portrait",
         theme_color: "#171717",
