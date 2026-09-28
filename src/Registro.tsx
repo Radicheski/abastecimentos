@@ -9,7 +9,12 @@ import {
 } from "./components/ui/item"
 import type { FuelRegister } from "./lib/types"
 
-function Registro({ register }: { register: FuelRegister }) {
+interface FuelRegisterProp {
+  register: FuelRegister
+  onClick?: () => void
+}
+
+function Registro({ register, onClick }: FuelRegisterProp) {
   const date = register.date.toLocaleDateString("pt-BR")
   const time = register.date.toLocaleTimeString("pt-BR", { timeStyle: "short" })
   const distance = register.distance.toLocaleString("pt-BR")
@@ -17,7 +22,7 @@ function Registro({ register }: { register: FuelRegister }) {
   const price = register.price.toLocaleString("pt-BR")
   const total = register.total.toLocaleString("pt-BR")
   return (
-    <Item variant="outline">
+    <Item variant="outline" onClick={onClick}>
       <ItemMedia>
         <Fuel />
       </ItemMedia>
