@@ -2,6 +2,7 @@ import { ItemGroup } from "./components/ui/item"
 import { Button } from "./components/ui/button"
 import { Plus, Trash2 } from "lucide-react"
 import type { FuelRegister } from "./lib/types"
+import { deleteRegister, listRegisters, saveRegister } from "./lib/storage"
 import Registro from "./Registro"
 import {
   Drawer,
@@ -21,8 +22,8 @@ import {
 import { Input } from "./components/ui/input"
 import React from "react"
 
-export function App({ data }: { data: FuelRegister[] }) {
-  const [registers, setRegisters] = React.useState(data)
+export function App() {
+  const [registers, setRegisters] = React.useState(listRegisters)
   const [open, setOpen] = React.useState(false)
   const [selected, setSelected] = React.useState<FuelRegister | null>(null)
 
@@ -32,16 +33,12 @@ export function App({ data }: { data: FuelRegister[] }) {
   }
 
   function save(register: FuelRegister) {
-    setRegisters((current) =>
-      current.some((r) => r.id === register.id)
-        ? current.map((r) => (r.id === register.id ? register : r))
-        : [...current, register]
-    )
+    setRegisters(saveRegister(register))
     setOpen(false)
   }
 
   function remove(register: FuelRegister) {
-    setRegisters((current) => current.filter((r) => r.id !== register.id))
+    setRegisters(deleteRegister(register.id))
     setOpen(false)
   }
 
